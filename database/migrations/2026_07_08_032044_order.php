@@ -22,7 +22,6 @@ return new class extends Migration
             $table->unsignedInteger('quantity')->default(1);
             $table->decimal('total_price', 12, 2);
             $table->enum('status', ['pending', 'approve'])->default('pending');
-
             $table->timestamps();
         });
     }
