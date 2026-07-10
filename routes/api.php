@@ -29,3 +29,7 @@ Route::post('/kategori-konser', [KategoriController::class, 'store']);
 Route::get('/kategori-konser/{id}', [KategoriController::class, 'show']);
 Route::put('/kategori-konser/{id}', [KategoriController::class, 'update']);
 Route::delete('/kategori-konser/{id}', [KategoriController::class, 'destroy']);
+
+Route::apiResource('order', \App\Http\Controllers\OrderController::class);
+Route::apiResource('ticket', \App\Http\Controllers\TicketController::class);
+Route::apiResource('konser', \App\Http\Controllers\KonserController::class);

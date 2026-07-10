@@ -1,10 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreKonserRequest;
+use App\Http\Requests\UpdateKonserRequest;
+use App\Http\Resources\KonserResource;
+use App\Repositories\Contracts\KonserRepositoryInterface;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-use Illuminate\Http\Request;
-
-class KonserKontroller extends Controller
+class KonserController extends Controller
 {
     public function __construct(private readonly KonserRepositoryInterface $repository)
     {

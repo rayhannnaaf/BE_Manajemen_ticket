@@ -10,7 +10,6 @@ class ticket extends Model
         'title',
         'description',
         'status',
-        'priority',
         'user_id',
     ];
 }

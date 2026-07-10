@@ -6,30 +6,31 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description');
-            $table->enum('status', ['open', 'in_progress', 'approve'])->default('open');
-            $table->enum('priority', ['low', 'medium', 'high'])->default('medium');
-            $table->unsignedBigInteger('user_id');
-            $table->float('total');
-            $table->timestamps();
+            $table->text('description')->nullable();
+            $table->enum('status', ['open', 'in_progress', 'closed'])->default('open');
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('konser_id')
+                ->constrained('konsers')
+                ->cascadeOnDelete();
+
+            $table->foreignId('kategori_id')
+                ->constrained('kategori')
+                ->cascadeOnDelete();
+
+            $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('tickets');
     }
 };
