@@ -40,5 +40,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('order', OrderController::class);
     Route::apiResource('ticket', TicketController::class);
-    Route::apiResource('konser', KonserController::class);
+    // Route::apiResource('konser', KonserController::class);
 });
