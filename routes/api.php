@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\KategoriController;
+use App\Http\Controllers\Api\KonserController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\TicketController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,12 +27,16 @@ use Illuminate\Support\Facades\Route;
 //     return response()->json(['message' => 'This is a public route']);
 // });
 
-Route::get('/kategori-konser', [KategoriController::class, 'index']);
-Route::post('/kategori-konser', [KategoriController::class, 'store']);
-Route::get('/kategori-konser/{id}', [KategoriController::class, 'show']);
-Route::put('/kategori-konser/{id}', [KategoriController::class, 'update']);
-Route::delete('/kategori-konser/{id}', [KategoriController::class, 'destroy']);
+// CRUD full — hanya untuk resource "master data" admin
+Route::apiResource('kategori', KategoriController::class);
+Route::apiResource('konsers', KonserController::class);
+Route::apiResource('tickets', TicketController::class);
 
-Route::apiResource('order', \App\Http\Controllers\OrderController::class);
-Route::apiResource('ticket', \App\Http\Controllers\TicketController::class);
-Route::apiResource('konser', \App\Http\Controllers\KonserController::class);
+// Order: SENGAJA tidak apiResource penuh
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/orders', [OrderController::class, 'index']);      // admin
+    Route::get('/orders/{id}', [OrderController::class, 'show']);  // admin
+    Route::post('/orders', [OrderController::class, 'store']);     // user landing page
+    Route::patch('/orders/{id}/approve', [OrderController::class, 'approve']); // admin centang
+    Route::patch('/orders/{id}/reject', [OrderController::class, 'reject']);   // admin reject
+});

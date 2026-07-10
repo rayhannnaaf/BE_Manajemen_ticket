@@ -24,7 +24,6 @@ class KategoriKonserService implements KategoriKonserServiceInterface
         return Kategori::find($id);
     }
 
-    // TAMBAHKAN METHOD UPDATE DI BAWAH INI
     public function update(int $id, array $data): ?Kategori
     {
         $kategori = $this->find($id);

@@ -10,18 +10,16 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-
             $table->foreignId('konser_id')
                 ->constrained('konsers')
                 ->cascadeOnDelete();
-
-            $table->foreignId('user_id')
-                ->constrained('users')
-                ->cascadeOnDelete();
-
-            $table->string('title');
-            $table->text('description')->nullable();
-            $table->enum('status', ['open', 'in_progress', 'closed'])->default('open');
+            $table->string('ticket_name');
+            $table->decimal('price',12,2);
+            $table->integer('stock');
+            $table->enum('status',[
+                'available',
+                'sold_out'
+            ])->default('available');
             $table->timestamps();
         });
     }

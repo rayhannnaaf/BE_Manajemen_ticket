@@ -10,13 +10,11 @@ return new class extends Migration
     {
         Schema::create('konsers', function (Blueprint $table) {
             $table->id();
-
             $table->foreignId('kategori_id')
                 ->constrained('kategori')
                 ->cascadeOnDelete();
-
             $table->string('name');
-            $table->dateTime('date');
+            $table->date('date');
             $table->string('location');
             $table->text('description')->nullable();
             $table->timestamps();

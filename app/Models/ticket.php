@@ -2,14 +2,34 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ticket extends Model
+class Ticket extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'title',
-        'description',
+        'konser_id',
+        'ticket_name',
+        'price',
+        'stock',
         'status',
-        'user_id',
     ];
+
+    protected $casts = [
+        'price' => 'decimal:2',
+    ];
+
+    public function konser(): BelongsTo
+    {
+        return $this->belongsTo(Konser::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
 }
