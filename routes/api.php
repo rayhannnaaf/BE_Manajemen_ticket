@@ -7,7 +7,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 // use App\Http\Controllers\KonserController;
 // use App\Http\Controllers\OrderController;
-use App\Http\Controllers\TicketController;
+use App\Http\Controllers\Api\TicketController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +24,19 @@ Route::post('/kategori', [KategoriController::class, 'store']);
 Route::get('/kategori/{id}', [KategoriController::class, 'show']);
 Route::put('/kategori/{id}', [KategoriController::class, 'update']);
 Route::delete('/kategori/{id}', [KategoriController::class, 'destroy']);
+
+Route::get('/konsers', [KonserController::class, 'index']);
+Route::post('/konsers', [KonserController::class, 'store']);
+Route::get('/konsers/{id}', [KonserController::class, 'show']);
+Route::put('/konsers/{id}', [KonserController::class, 'update']);
+Route::delete('/konsers/{id}', [KonserController::class, 'destroy']);
+
+Route::get('/tickets', [TicketController::class, 'index']);
+Route::post('/tickets', [TicketController::class, 'store']);
+Route::get('/tickets/{id}', [TicketController::class, 'show']);
+Route::put('/tickets/{id}', [TicketController::class, 'update']);
+Route::delete('/tickets/{id}', [TicketController::class, 'destroy']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
@@ -38,22 +51,22 @@ Route::middleware('auth:sanctum')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth:sanctum')->group(function () {
-
-// CRUD full — hanya untuk resource "master data" admin
-// Route::apiResource('kategori', KategoriController::class);
-Route::apiResource('konsers', KonserController::class);
-Route::apiResource('tickets', TicketController::class);
-
-// Order: SENGAJA tidak apiResource penuh
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/orders', [OrderController::class, 'index']);      // admin
-    Route::get('/orders/{id}', [OrderController::class, 'show']);  // admin
-    Route::post('/orders', [OrderController::class, 'store']);     // user landing page
-    Route::patch('/orders/{id}/approve', [OrderController::class, 'approve']); // admin centang
-    Route::patch('/orders/{id}/reject', [OrderController::class, 'reject']);   // admin reject
-});
-
-Route::apiResource('order', OrderController::class);
-Route::apiResource('ticket', TicketController::class);
+    
+    // CRUD full — hanya untuk resource "master data" admin
+    // Route::apiResource('kategori', KategoriController::class);
+    // Route::apiResource('konsers', KonserController::class);
+    // Route::apiResource('tickets', TicketController::class);
+    
+    // Order: SENGAJA tidak apiResource penuh
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/orders', [OrderController::class, 'index']);      // admin
+        Route::get('/orders/{id}', [OrderController::class, 'show']);  // admin
+        Route::post('/orders', [OrderController::class, 'store']);     // user landing page
+        Route::patch('/orders/{id}/approve', [OrderController::class, 'approve']); // admin centang
+        Route::patch('/orders/{id}/reject', [OrderController::class, 'reject']);   // admin reject
+        });
+        
+        // Route::apiResource('ticket', TicketController::class);
+        Route::apiResource('order', OrderController::class);
 // Route::apiResource('konser', KonserController::class);
 });

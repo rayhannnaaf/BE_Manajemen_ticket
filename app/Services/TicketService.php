@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Contracts\TicketServiceInterface;
@@ -14,6 +15,10 @@ class TicketService implements TicketServiceInterface
 
     public function create(array $data): Ticket
     {
+        if (isset($data['stock']) && (int) $data['stock'] === 0) {
+            $data['status'] = 'sold_out';
+        }
+
         return Ticket::create($data);
     }
 
@@ -28,8 +33,13 @@ class TicketService implements TicketServiceInterface
         if (!$ticket) {
             return null;
         }
+
+        if (isset($data['stock']) && (int) $data['stock'] === 0 && !isset($data['status'])) {
+            $data['status'] = 'sold_out';
+        }
+
         $ticket->update($data);
-        return $ticket;
+        return $ticket->fresh('konser');
     }
 
     public function delete(int $id): bool
@@ -38,6 +48,6 @@ class TicketService implements TicketServiceInterface
         if (!$ticket) {
             return false;
         }
-        return $ticket->delete();
+        return (bool) $ticket->delete();
     }
 }
