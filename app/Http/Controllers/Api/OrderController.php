@@ -109,7 +109,7 @@ class OrderController extends Controller
             Storage::disk('public')->delete($order->image);
         }
 
-        $order->delete(); 
+        $order->delete();
 
         return response()->json(['message' => 'Order berhasil dihapus']);
     }
