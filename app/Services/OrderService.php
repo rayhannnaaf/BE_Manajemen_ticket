@@ -1,8 +1,4 @@
 <?php
-// app/Services/OrderService.php
-// Logic penting: stok dikurangi saat APPROVE, bukan saat order dibuat.
-// Pakai lockForUpdate() supaya aman dari race condition (2 admin approve
-// bersamaan / 2 user rebutan tiket terakhir).
 
 namespace App\Services;
 
@@ -39,6 +35,7 @@ class OrderService implements OrderServiceInterface
             return Order::create([
                 'user_id'     => $data['user_id'],
                 'ticket_id'   => $ticket->id,
+                'image'       => $data['image'],
                 'quantity'    => $data['quantity'],
                 'total_price' => $ticket->price * $data['quantity'],
                 'status'      => 'pending',
@@ -86,9 +83,8 @@ class OrderService implements OrderServiceInterface
             ]);
         }
 
-        // Reject tidak menyentuh stok karena stok belum dikurangi saat pending
-        $order->delete();
+        $order->update(['status' => 'reject']);
 
-        return $order;
+        return $order->fresh(['ticket.konser', 'user']);
     }
 }

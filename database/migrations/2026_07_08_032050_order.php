@@ -18,10 +18,10 @@ return new class extends Migration
             $table->foreignId('ticket_id')
                 ->constrained('tickets')
                 ->cascadeOnDelete();
-
+            $table->string('image');
             $table->unsignedInteger('quantity')->default(1);
             $table->decimal('total_price', 12, 2);
-            $table->enum('status', ['pending', 'approve'])->default('pending');
+            $table->enum('status', ['pending', 'approve', 'reject'])->default('pending');
             $table->timestamps();
         });
     }

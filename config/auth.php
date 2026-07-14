@@ -42,6 +42,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api' => [
+            'driver' => 'sanctum', // <-- PASTIKAN INI 'sanctum', bukan 'token' atau 'session'
+            'provider' => 'users',
+        ],
     ],
 
     /*

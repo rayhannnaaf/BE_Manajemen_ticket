@@ -6,6 +6,7 @@ use App\Contracts\KonserServiceInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
 
 class KonserController extends Controller
 {
@@ -14,19 +15,12 @@ class KonserController extends Controller
     ) {
     }
 
-    /**
-     * Menampilkan semua data konser
-     */
     public function index(): JsonResponse
     {
         $data = $this->service->getAll();
-
         return response()->json($data);
     }
 
-    /**
-     * Menyimpan data konser baru
-     */
     public function store(Request $request): JsonResponse
     {
         $request->validate([
@@ -35,16 +29,20 @@ class KonserController extends Controller
             'date'        => 'required|date',
             'location'    => 'required|string|max:255',
             'description' => 'nullable|string',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $konser = $this->service->create($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('konser', 'public');
+        }
+
+        $konser = $this->service->create($data);
 
         return response()->json($konser, 201);
     }
 
-    /**
-     * Menampilkan detail konser
-     */
     public function show(int $id): JsonResponse
     {
         $konser = $this->service->find($id);
@@ -58,9 +56,6 @@ class KonserController extends Controller
         return response()->json($konser);
     }
 
-    /**
-     * Update data konser
-     */
     public function update(Request $request, int $id): JsonResponse
     {
         $request->validate([
@@ -69,9 +64,10 @@ class KonserController extends Controller
             'date'        => 'sometimes|date',
             'location'    => 'sometimes|string|max:255',
             'description' => 'nullable|string',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $konser = $this->service->update($id, $request->all());
+        $konser = $this->service->find($id);
 
         if (!$konser) {
             return response()->json([
@@ -79,24 +75,40 @@ class KonserController extends Controller
             ], 404);
         }
 
+        $data = $request->all();
+
+        if ($request->hasFile('image')) {
+
+            if (!empty($konser->image) && Storage::disk('public')->exists($konser->image)) {
+                Storage::disk('public')->delete($konser->image);
+            }
+
+            $data['image'] = $request->file('image')->store('konser', 'public');
+        }
+
+        $konser = $this->service->update($id, $data);
+
         return response()->json($konser);
     }
 
-    /**
-     * Hapus konser
-     */
     public function destroy(int $id): JsonResponse
     {
-        $deleted = $this->service->delete($id);
+        $konser = $this->service->find($id);
 
-        if (!$deleted) {
+        if (!$konser) {
             return response()->json([
                 'message' => 'Konser tidak ditemukan'
             ], 404);
         }
 
+        if (!empty($konser->image) && Storage::disk('public')->exists($konser->image)) {
+            Storage::disk('public')->delete($konser->image);
+        }
+
+        $this->service->delete($id);
+
         return response()->json([
             'message' => 'Konser berhasil dihapus'
         ]);
     }
-}   
+}

@@ -2,33 +2,32 @@
 
 namespace App\Models;
 
-use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Order extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'user_id',
         'ticket_id',
+        'image',
         'quantity',
         'total_price',
         'status',
     ];
 
-    protected $casts = [
-        'total_price' => 'decimal:2',
-    ];
+    protected $appends = ['image_url'];
 
-    public function ticket(): BelongsTo
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->image ? asset('storage/' . $this->image) : null;
+    }
+
+    public function ticket()
     {
         return $this->belongsTo(Ticket::class);
     }
 
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
