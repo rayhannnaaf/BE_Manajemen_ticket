@@ -17,7 +17,7 @@ class OrderController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $orders = $this->service->getAll();
+        $orders = collect($this->service->getAll());
 
         if ($request->filled('user_id')) {
             $orders = $orders->where('user_id', $request->query('user_id'))->values();
@@ -28,6 +28,13 @@ class OrderController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        // Cek autentikasi lebih awal, sebelum akses $request->user()->id
+        if (!$request->user()) {
+            return response()->json([
+                'message' => 'Unauthenticated. Token tidak valid atau tidak dikirim.',
+            ], 401);
+        }
+
         $request->validate([
             'ticket_id' => 'required|exists:tickets,id',
             'quantity'  => 'required|integer|min:1',
@@ -102,7 +109,7 @@ class OrderController extends Controller
             Storage::disk('public')->delete($order->image);
         }
 
-        $order->delete;
+        $order->delete(); 
 
         return response()->json(['message' => 'Order berhasil dihapus']);
     }

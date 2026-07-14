@@ -18,8 +18,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+
+    Route::get('/orders/{id}', [OrderController::class, 'show']);
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::post('/orders/{id}/approve', [OrderController::class, 'approve']);
+    Route::post('/orders/{id}/reject', [OrderController::class, 'reject']);
 });
 
+// Kategori, Konser, Ticket: publik (boleh diakses tanpa login)
 Route::get('/kategori', [KategoriController::class, 'index']);
 Route::post('/kategori', [KategoriController::class, 'store']);
 Route::get('/kategori/{id}', [KategoriController::class, 'show']);
@@ -37,9 +44,3 @@ Route::post('/tickets', [TicketController::class, 'store']);
 Route::get('/tickets/{id}', [TicketController::class, 'show']);
 Route::put('/tickets/{id}', [TicketController::class, 'update']);
 Route::delete('/tickets/{id}', [TicketController::class, 'destroy']);
-
-Route::get('/orders/{id}', [OrderController::class, 'show']);
-Route::post('/orders', [OrderController::class, 'store']);
-Route::get('/orders', [OrderController::class, 'index']);
-Route::post('/orders/{id}/approve', [OrderController::class, 'approve']);
-Route::post('/orders/{id}/reject', [OrderController::class, 'reject']);
